@@ -1,0 +1,86 @@
+parameters:
+  #-------------------
+  # ONLY FOR CONSOLE USE
+  #
+  # 1. $ bin/console geonamesdump:config
+  #   Only use the dump array to select concrete administrative divisions
+  #   See ./sample.yml
+  #
+  # 2. $ bin/console geonamesdump:country
+  #  Will ask for countries to download
+  #  The default all administrative division until Admin3.
+  #  Use $ bin/console geonamesdump:country -d=DEEP to change default deep (3)
+  #
+  #-------------------
+  geonames_dump:
+    config: # global uploader config & default parameters
+      tmpdir: '%kernel.cache_dir%/geonames/'              # tmp dir in Symfony cache dir /var/cache/dev|prod/geonames
+      rmdir: true                                         # bool Delete tmpdir files once finished. Avoid downloads in tests if false.
+      flush: true                                         # bool Save or test
+      flusheach: 100                                      # int flush each x objects committed
+      overwrite: false                                    # bool overwrite if exists
+      limit: 0                                            # int Limit for test
+      localdir: ~/.cache/geonames/                        # local dir to load custom file
+      webdir: 'http://download.geonames.org/export/dump/' # Geonames url to download files
+
+    # Geonames webservice parameters. Only for continent xml loader in command bin/console geonamesdump:config
+    webService:
+#      userName: 'demo' # Registered user in http://www.geonames.org/
+#      token: null
+#      apiUrl: "http://api.geonames.org/"
+#      defaultLanguage: es
+#      defaultCountryCode: ES
+#      style: full
+#      mapsUrl: "http://www.geonames.org/maps/"
+#      responseFormat: json # Prefered if available
+#      radius: 10
+
+    #loaders and files, if commented|deleted will not be available in command bin/console geonamesdump:config
+    loaders:
+      country:
+        file: countryInfo.txt
+      admin1:
+        file: admin1CodesASCII.txt
+      admin2:
+        file: admin2Codes.txt
+      admin3: #no file, will search in:: {COUNTRY}.zip
+      #admin3code: #no file, will search in: {COUNTRY}.zip
+      #geonames: #no file, will search in: {COUNTRY}.zip
+      #continent: #no file: Xml response .
+
+    #-------------------
+    # This array contains only parameters for the command $ bin/console geonamesdump:config
+    # The process will ask for loaders to use
+    #
+    # Country, admin1, admin2 & admin3  has relationships.
+    # Running lower adminX... without previous higher administrative division loaded will throw exception.
+    #
+    # To Define other dump configuration by country & administrative division see ./sample.yml
+    #
+    #-------------------
+    dump:
+      # simplest Sample
+      country: [ES]     # Only spain country code
+      admin1: [ES]      # load all CCAA==Länder==States
+      admin2: [ES]      # load all Provincias, Regierungsbezirk, county ...
+      admin3: [ES]      # load all municipios,Townships, ...
+      #-------------------
+      # admin3code loader. Uncomment admin3code in loaders to use.
+      # Suppor for codes. See GeoNames Feature Codes: ADM3 like, PRSH (parish), PPL(populated place)...
+      # See GeoNames Feature Codes: ADM3 (third-order administrative division), PRSH (parish), PPL(populated place)...
+      # See Codes: http://www.geonames.org/export/codes.html
+      #-------------------
+#      admin3code:
+#        ES:
+#          code: {A: ['ADM3'], P: null} # Admin3 OR any population inside Admin2
+    #-------------------
+    # Loader for Geonames {COUNTRY}.zip. Uncomment admin3code in loaders to use.
+    # No Association Mapping with administrative divisions
+    #-------------------
+#      geonames: [ES]
+    #-------------------
+    # Loader for continent data using webservice. Uncomment continent in loaders to use.
+    # XML to DB. Require user and password in App/Geonames/Resources/config/geonames.yml
+    # No Association Mapping with administrative divisions
+    #-------------------
+      continent: [EU] # ['AF','AS', 'EU', 'NA', 'OC', 'SA', 'AN']

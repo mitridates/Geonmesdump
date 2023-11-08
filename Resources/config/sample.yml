@@ -1,0 +1,61 @@
+parameters:
+
+
+  #Basic dump for one country  (same as bin/console geonames:dump:country ES)
+#  dump:
+#    country: [ES]     # Country codes
+#    admin1: [ES]      # CCAA==Länder==States
+#    admin2: [ES]      # Provincias, Regierungsbezirk, county ...
+#    admin3: [ES]      # Townships, municipios, ...
+
+  #Basic two countries in a line
+#  dump: { country: [ES, DE], admin1: [ES, DE], admin2: [ES, DE], admin3: [ES, DE]}
+
+  # More complex. Load selected administrative division codes
+  # Lookup codes in files or geonames service.
+  geonames_dump.sample:
+
+    # bin/console geonames:dump country
+    country: [ES, US, DE] # Total 3
+
+    # bin/console geonames:dump admin1
+    admin1:
+      ES: [51, 31]      #  2 Andalucía y Murcia
+      US: null          # 51 inc Washington D. C.
+      DE: null          # 16
+                  # Total 69
+
+    # bin/console geonames:dump admin2
+    admin2:
+      DE: null        # 19
+      ES: [31]        #  1 Murcia
+      US: [NM]        # (New Mexico) 33
+                 #Total 53
+
+    # bin/console geonames:dump admin3
+    admin3:
+      DE: null        # 401 (182 without admin2)
+      ES: [31]        # 45 Murcia
+      US: [NM]        # (New Mexico) 9
+                #Total: 455
+
+    #Load populated places and ADM3 WHEN ADM3 is not enough
+    # bin/console geonames:dump admin3code
+    admin3code:
+      US:
+        code: {A: ['ADM3'], P: null} # Admin3 OR any population inside Admin2 (New Mexico)
+        NM: null
+        # Total : 1852 (9 repeated ADM3, loaded with previous admin3 loader)
+
+      ##########################################
+      #         Loaders for Geonames          #
+      #         No Association Mapping        #
+      # THIS TABLE IS NOT USED IN ANY BUNDLE  #
+      #########################################
+    geonames:
+      DE:
+        code: {A: ['ADM1', 'ADM2', 'ADM3']} # See Codes: http://www.geonames.org/export/codes.html
+        # Total: 436 Same as Admin1+2+3 loaders for DE
+
+    #Continent XML to geonames table. Require user and password in Geonames/Resources/config/geonamesWebService.yml
+    continent: ['AF','AS', 'EU', 'NA', 'OC', 'SA', 'AN']

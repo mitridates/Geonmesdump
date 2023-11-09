@@ -71,6 +71,7 @@ OPTIONS
     Dump to DB administrative divisions with deep level 3: country + admin1 + admin2 + admin3
     Confirm to load country [ES] until lower administrative division "admin3" [y/n]:
     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    ...
 ```
     
 ## Config loader command

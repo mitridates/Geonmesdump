@@ -161,7 +161,7 @@ class dumpCountryCommand extends Command
 
         foreach($loaders as $key => $loader) {
 
-            if($key==0) $fileHelper->createTemporaryDir();
+            if($key==0) $fileHelper->createTempDir();
             $class = $loaderNamespace.ucfirst((string) $loader).'Loader';
             /**
              * @var LoaderInteface $loader

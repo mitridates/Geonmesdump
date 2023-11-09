@@ -71,9 +71,10 @@ class FileHelper
      */
     private function getCurlFile(string $file): bool
     {
-        if (!function_exists('curl_version')){
+            if (!function_exists('curl_version')){
             return false;
         }
+
         $from = $this->webdir.$file;
         $to = $this->tmpdir.$file;
         set_time_limit(0);
@@ -134,7 +135,7 @@ class FileHelper
      * Create temp dir in Symfony cache if not exists
      * @throws \Exception
      */
-    public function createTemporaryDir(): void
+    public function createTempDir(): void
     {
 
         if(file_exists($this->tmpdir)) return;
@@ -147,10 +148,6 @@ class FileHelper
       public function getTmpdir(): string
     {
         return $this->tmpdir;
-    }
-    public function getLocaldir(): string
-    {
-        return $this->localdir;
     }
 
 }

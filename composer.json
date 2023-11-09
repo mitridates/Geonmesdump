@@ -17,16 +17,15 @@
   ],
   "require": {
     "php": ">=8.1",
-    "mitridates/geonames-bundle": "^1.0",
-    "ext-curl": "*"
+    "mitridates/geonames-bundle": "^1.0"
   },
   "repositories" : [{
-    "type" : "vcs",
+    "type" : "git",
     "url" : "https://github.com/mitridates/Geonamesdump.git"
   }],
   "autoload": {
     "psr-4": {
-      "App\\Geonamesdump\\": ""
+      "App\\Geonamesdump\\": "../../src/"
     }
   }
 }

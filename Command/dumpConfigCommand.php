@@ -170,14 +170,14 @@ class dumpConfigCommand extends Command
 
         foreach($ordered as $key => $item) {
 
-            if($key==0) $fileHelper->createTemporaryDir();
+            if($key==0) $fileHelper->createTempDir();
 
             $class = $loaderNamespace.ucfirst($item).'Loader';
             /**
              * @var LoaderInteface $loader
              */
             $loader = new $class($fileHelper, $repositoryHelper, $this->parameters);
-            if($key===0) $fileHelper->createTemporaryDir();
+            if($key===0) $fileHelper->createTempDir();
             $loader->load();
             if($key == count($ordered)-1 && $this->parameters['config']['rmdir']) $fileHelper->deleteTemporaryDir();
         }

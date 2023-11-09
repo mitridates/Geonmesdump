@@ -33,11 +33,21 @@ Add to config/bundles.php
 
 ## Configure
 
-Use some global parameters for loaders or default options 
+Modify global parameters for loaders or use default options
 
     parameters:
-        config:
-            ...
+        geonames_dump:
+            config: # global uploader config & default parameters
+            tmpdir: '%kernel.cache_dir%/geonames/'              # tmp dir in Symfony cache dir /var/cache/dev|prod/geonames
+            rmdir: true                                         # bool Delete tmpdir files once finished. false Avoid recursive downloads.
+            flush: true                                         # bool Save or test
+            flusheach: 100                                      # int flush each x objects committed
+            overwrite: false                                    # bool overwrite if exists
+            limit: 0                                            # int Limit for test
+            localdir: ~/.cache/geonames/                        # local dir to load custom geonames file if exists.  See files names in loaders config
+            webdir: 'http://download.geonames.org/export/dump/' # Geonames url to download files
+
+
 See [Resources/config/parameters.yml](./Resources/config/parameters.yml).
     
 ## Countries loader command

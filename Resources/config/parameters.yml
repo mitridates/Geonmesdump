@@ -15,7 +15,7 @@ parameters:
   geonames_dump:
     config: # global uploader config & default parameters
       tmpdir: '%kernel.cache_dir%/geonames/'              # tmp dir in Symfony cache dir /var/cache/dev|prod/geonames
-      rmdir: true                                         # bool Delete tmpdir files once finished. Avoid downloads in tests if false.
+      rmdir: true                                         # bool Delete tmpdir files once finished. false Avoid recursive downloads.
       flush: true                                         # bool Save or test
       flusheach: 100                                      # int flush each x objects committed
       overwrite: false                                    # bool overwrite if exists

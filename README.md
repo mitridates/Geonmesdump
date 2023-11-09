@@ -71,7 +71,7 @@ If parameter administrative-division is not defined, the loader will ask for loa
 
 #### Command
 
-    geonamesdump:config [optional administrative-division] [-d deep] [-t test]
+    geonamesdump:config [optional administrative-division] [-t test]
 
 ARGUMENT
 - [administrative-division]: If not defined the loader will ask for administrative division to load

@@ -15,12 +15,12 @@ parameters:
   geonames_dump:
     config: # global uploader config & default parameters
       tmpdir: '%kernel.cache_dir%/geonames/'              # tmp dir in Symfony cache dir /var/cache/dev|prod/geonames
-      rmdir: true                                         # bool Delete tmpdir files once finished. false Avoid recursive downloads.
-      flush: true                                         # bool Save or test
+      rmdir: false                                         # bool Delete tmpdir files once finished. false Avoid recursive downloads.
+      flush: false                                         # bool Save or test
       flusheach: 100                                      # int flush each x objects committed
       overwrite: false                                    # bool overwrite if exists
       limit: 0                                            # int Limit for test
-      localdir: ~/.cache/geonames/                        # local dir to load custom file
+      localdir: null                                      # local dir to load custom file. ex.: ~/.cache/geonames/
       webdir: 'http://download.geonames.org/export/dump/' # Geonames url to download files
 
     # Geonames webservice parameters. Only for continent xml loader in command bin/console geonamesdump:config

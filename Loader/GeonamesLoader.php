@@ -71,9 +71,9 @@ class GeonamesLoader extends BaseLoader implements LoaderInteface
 
             switch (true)
             {
-                case $this->filehelper->getFileFromLocaldir($txt):
+                case $this->filehelper->searchForCustomFileOrCachedFile($txt):
                     break;
-                case $this->filehelper->getFileFromLocaldir($zip):
+                case $this->filehelper->searchForCustomFileOrCachedFile($zip):
                     $this->filehelper->unzip($zip);
                     break;
                 default:

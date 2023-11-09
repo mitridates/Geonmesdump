@@ -63,14 +63,10 @@ class Admin3Loader extends BaseLoader implements LoaderInteface
         $entity->setAdmin1($admin1);
         $entity->setAdmin2($admin2);
 
-
-//        if(!$entity->getAdmin2())
-
         //set ID
         $reflection = new \ReflectionClass($entity);
         $property = $reflection->getProperty('id');
         $property->setAccessible(true);
-
         $property->setValue($entity, $countryCode.'.'.$admin1Code.'.'.$admin2Code.'.'.$admin3Code);
 
         foreach(['nameascii','name','geonameid'] as $field){
@@ -95,13 +91,13 @@ class Admin3Loader extends BaseLoader implements LoaderInteface
         {
             $zip = $countryCode.'.zip';
             $txt=  $countryCode.'.txt';
-            $grepFile= $countryCode.'.admin3Codes.txt';
-            if(!$this->filehelper->getFileFromLocaldir($grepFile)){
+            $endFileName= $countryCode.'.admin3Codes.txt';
+            if(!$this->filehelper->searchForCustomFileOrCachedFile($endFileName)){
                 switch (true)
                 {
-                    case $this->filehelper->getFileFromLocaldir($txt):
+                    case $this->filehelper->searchForCustomFileOrCachedFile($txt):
                         break;
-                    case $this->filehelper->getFileFromLocaldir($zip):
+                    case $this->filehelper->searchForCustomFileOrCachedFile($zip):
                         $this->filehelper->unzip($zip);
                         break;
                     default:
@@ -109,11 +105,14 @@ class Admin3Loader extends BaseLoader implements LoaderInteface
                         $this->filehelper->unzip($zip);
                 }
 
-                $this->filehelper->grepToFile($txt, $pattern, $grepFile); //get lines with <tab>ADM3<tab> pattern
+                //Grep lines with <tab>ADM3<tab> pattern to file in temporary dir
+                $endFile= $this->filehelper->getTmpdir().$endFileName;
+                $lines = preg_grep($pattern, file($this->filehelper->getTmpdir().$txt));
+                file_put_contents($endFile, $lines);
+
             }
 
-
-            $this->appConfig['loaders'][$this->name]['file'] = $grepFile;//$countryCode.'.txt';
+            $this->appConfig['loaders'][$this->name]['file'] = $endFileName;
             $this->Commonloader();
         }
         return $this;

@@ -1,7 +1,5 @@
 <?php
 namespace App\Geonamesdump\Util;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
 
 class FileHelper
@@ -9,16 +7,15 @@ class FileHelper
     /**
      * FileHelper constructor.
      */
-    public function __construct(private readonly string $webdir, private readonly string $localdir, private readonly string $tmpdir)
+    public function __construct(private readonly string $webdir, private readonly string|null $localdir, private readonly string $tmpdir)
     {
     }
 
     /**
-     * Local search. First try Symfony cache, second: custom local dir
-     * @param string $file filename
-     * @return bool
+     * Search custom local file or try in Symfony cache
      */
-    public function getFileFromLocaldir($file){
+    public function searchForCustomFileOrCachedFile(string $file): bool
+    {
         $from = $this->localdir.$file;
         $to = $this->tmpdir.$file;
 
@@ -40,13 +37,12 @@ class FileHelper
     }
 
     /**
-     * Download to temp dir
-     * @param string $file filename
-     * @return void
+     * Get local file or Download to Symfony cache dir
      * @throws \Exception
      */
-    public function downloadFile($file){
-        if($this->getFileFromLocaldir($file)) return;
+    public function downloadFile(string $file): void
+    {
+        if($this->searchForCustomFileOrCachedFile($file)) return;
         elseif ($this->getCurlFile($file)) return ;
         elseif ($this->getWgetFile($file)) return ;
         else throw new \Exception('Download "%s" error!!!', $file);
@@ -108,18 +104,14 @@ class FileHelper
     }
 
     /**
-     * Command line unzip
-     * @param string $file file name
-     * @param string $from source directory
-     * @param string $end end directory
-     * @return $this
      * @throws \Exception
      */
-    public function unzip($file, $from= null, $end= null){
-        $from = $from ? : $this->tmpdir;
-        $end = $end ? : $from;
+    public function unzip(string $fileName, string $fromDir= null, string $endDir= null): FileHelper
+    {
+        $fromDir = $fromDir ? : $this->tmpdir;
+        $endDir = $endDir ? : $fromDir;
 
-        $unzip = new Process(['unzip', '-q', '-j', '-o', $from.$file, '-d', $end]);
+        $unzip = new Process(['unzip', '-q', '-j', '-o', $fromDir.$fileName, '-d', $endDir]);
         $unzip->run();
         if(!$unzip->isSuccessful()){
             throw new \Exception($unzip->getErrorOutput());
@@ -128,47 +120,37 @@ class FileHelper
     }
 
     /**
-     * Grep lines to file in temporary dir
-     * @param string $file Geonames country.txt file
-     * @return $this
-     */
-    public function grepToFile(string $file, string $pattern, string $grepFile)
-    {
-        //$countryCode= explode(".", $file)[0];
-        $endFile= $this->tmpdir.$grepFile;
-        //$strArg= "$(printf '\\t')ADM3$(printf '\\t')";
-        //$strArg= "/\\tADM3\\t/";
-        $lines = preg_grep($pattern, file($this->tmpdir.$file));
-        file_put_contents($endFile, $lines);
-        return $this;
-    }
-
-
-    /**
-     * Delete temp dir
-     * @return void
      * @throws \Exception
      */
-    public function deleteTemporaryDir(){
+    public function deleteTemporaryDir(): void
+    {
         if(!file_exists($this->tmpdir)) return;
         $rmdir = new Process(['rm', '-R', $this->tmpdir]);
         $rmdir->run();
         if(!$rmdir->isSuccessful()) throw new \Exception($rmdir->getErrorOutput());
-        return;
     }
 
     /**
-     * Create temp dir if not exists
-     * @return void
+     * Create temp dir in Symfony cache if not exists
      * @throws \Exception
      */
-    public function createTemporaryDir(){
+    public function createTemporaryDir(): void
+    {
 
         if(file_exists($this->tmpdir)) return;
         if(!@mkdir($this->tmpdir, 0777, true)){
             $e = error_get_last();
             throw new \Exception($e['message']);
         }
-        return;
     }
+
+      public function getTmpdir(): string
+    {
+        return $this->tmpdir;
+    }
+    public function getLocaldir(): string
+    {
+        return $this->localdir;
+    }
+
 }

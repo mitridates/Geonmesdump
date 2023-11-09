@@ -11,10 +11,13 @@ The simplest dump command will load country + admin1 + admin2 + admin3
 
         geonamesdump:country [country-code]
 
+Once loaded tables, remove the bundle and the lines in config/bundles.php.
+
 ## Install
 
 
-  Download Geonames (Bundle with Entities) and Geonamesdump (cmd installer)
+  Download Geonames (Bundle with Entities) and Geonamesdump (cmd installer).
+  Used as bundle under SymfonyDir/src/
  
    ```command
     git clone https://github.com/mitridates/Geonames.git.
@@ -99,7 +102,6 @@ OPTIONS
      100 31413  100 31413    0     0   100k      0 --:--:-- --:--:-- --:--:--   99k
      ...
    ```
-
 
 ## Require
 

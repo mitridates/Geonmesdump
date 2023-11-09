@@ -13,13 +13,20 @@ The simplest dump command will load country + admin1 + admin2 + admin3
 
 ## Install
 
-### Get the Bundle
 
+  Download Geonames (Bundle with Entities) and Geonamesdump (cmd installer)
+ 
+   ```command
+    git clone https://github.com/mitridates/Geonames.git.
     git clone https://github.com/mitridates/Geonamesdump.git.
-    
-### Add to config/bundles.php
+   ```
+  
+Add to config/bundles.php
+   ```php
     ...
-    App\Geonames\Geonamesdump::class =>  ['dev' => true];
+    App\Geonames\Geonames::class => ['all' => true],
+    App\Geonamesdump\Geonamesdump::class => ['dev' => true]
+   ```
 
 ## Configure
 
@@ -31,6 +38,9 @@ Use some global parameters for loaders or default options
 See [Resources/config/parameters.yml](./Resources/config/parameters.yml).
     
 ## Countries loader command
+Load country and administrative divisions until desired deep.  
+
+#### Command
 
     geonamesdump:country [optional country-code] [-d deep] [-t test]
 
@@ -38,22 +48,58 @@ ARGUMENT
 - [country-code]: If not defined the loader will ask for countries to load
  
 OPTIONS
-- -t=TEST: Simulate load. Will not flush to database.
-- -d=DEEP: How deep to load (0-3): country, admin1, admin2, admin3
+- -t=TEST: Simulate load. Will not flush to database. Default false. Predefined in global config
+- -d=DEEP: How deep to load (0-3): country, admin1, admin2, admin3. default 3. Predefined in global config
 
+#### Sample
+
+```console
+    $ bin/console geonamesdump:country ES
+    Dump to DB administrative divisions with deep level 3: country + admin1 + admin2 + admin3
+    Confirm to load country [ES] until lower administrative division "admin3" [y/n]:
+    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+```
+    
 ## Config loader command
 
-    geonamesdump:config [optional administrative-division] [-d deep] [-t test]
+Load country and/or administrative divisions. Will look up in parameters.geonames_dump.dump the config for loaders
+See dump examples in /Resources/config/[sample.yml](./Resources/config/sample.yml).
+If parameter administrative-division is not defined, the loader will ask for loaders to run. 
 
-Will look up in parameters.geonames_dump.dump the config for loaders
-See dump examples in  [Resources/config/sample.yml](./Resources/config/sample.yml)
- ./sample.yml
+#### Command
+
+    geonamesdump:config [optional administrative-division] [-d deep] [-t test]
 
 ARGUMENT
 - [administrative-division]: If not defined the loader will ask for administrative division to load
 
 OPTIONS
 - -t=TEST: Simulate load. Will not flush to database.
+
+
+#### Sample
+
+   ```console
+     bin/console geonamesdump:config
+     Add loader from list. Press <Enter> to run selected loaders.
+     Available loaders:country, admin1, admin2, admin3
+     Add Loader: country
+     Available loaders:admin1, admin2, admin3
+     Selected loaders: country
+     Add Loader: admin1
+     Available loaders:admin2, admin3
+     Selected loaders: country,admin1
+     Add Loader: admin2
+     Available loaders:admin3
+     Selected loaders: country,admin1,admin2
+     Add Loader:
+     Confirm to run loaders: country,admin1,admin2 [y/n]
+     % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     Dload  Upload   Total   Spent    Left  Speed
+     100 31413  100 31413    0     0   100k      0 --:--:-- --:--:-- --:--:--   99k
+     ...
+   ```
+
 
 ## Require
 
